@@ -3,6 +3,7 @@ export interface SiteOptions {
   suffix?: string
   description?: Partial<Record<'zh' | 'en', string>>
   url?: string
+  favicon?: string
   author?: string
   email?: string
   about?: string
@@ -16,6 +17,7 @@ const textFields: Record<string, true> = {
   title: true,
   suffix: true,
   url: true,
+  favicon: true,
   author: true,
   email: true,
   about: true,
@@ -82,6 +84,18 @@ export function validateSiteOptions(value: unknown, source: string): SiteOptions
       throw new Error(`${source}.url: expected an HTTP(S) origin without a path, query, fragment or credentials`)
     }
     result.url = url.origin
+  }
+  if (result.favicon !== undefined) {
+    try {
+      const icon = new URL(result.favicon, 'https://example.com')
+      if (!/^(?:\/(?![\\/])|https?:\/\/)/i.test(result.favicon)
+        || !['http:', 'https:'].includes(icon.protocol) || icon.username || icon.password
+        || result.favicon.includes('\\')) {
+        throw new Error('Invalid favicon URL')
+      }
+    } catch {
+      throw new Error(`${source}.favicon: expected a root-relative path or absolute HTTP(S) URL`)
+    }
   }
   return result
 }

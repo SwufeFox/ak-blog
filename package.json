@@ -1,6 +1,6 @@
 {
   "name": "@swufefox/ak-blog",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "license": "MIT",
   "description": "Build a bilingual static blog from a content repository with Next.js and ak-ui.",

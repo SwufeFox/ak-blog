@@ -21,6 +21,7 @@ my-content/
       hello.md
   images/
     diagram.svg
+    favicon.svg
   site.json
 ```
 
@@ -55,6 +56,7 @@ npx @swufefox/ak-blog build --content . --out ./out
     "en": "Notes on code, tools and everyday life."
   },
   "url": "https://blog.example.com",
+  "favicon": "/content/images/favicon.svg",
   "author": "你的名字",
   "email": "hello@example.com",
   "sameAs": ["https://github.com/your-name"],
@@ -65,6 +67,8 @@ npx @swufefox/ak-blog build --content . --out ./out
 所有字段均可省略，省略部分沿用模板默认值。可用字段还包括 `about`、`repo` 和 `license: { "name": "…", "url": "…" }`。`description`、`license` 按字段合并；`postsOnHome: 0` 表示展示全部文章。
 
 `url` 必须是 HTTP(S) 站点 origin，不带部署子路径、查询或 fragment。环境变量 `NEXT_PUBLIC_SITE_URL` 的优先级高于 `site.json.url`，适合在构建平台设置实际域名。它在构建时写入 canonical、RSS 和 sitemap，改域名后需重新构建。
+
+从 `1.0.3` 起，浏览器标签页图标通过 `favicon` 配置：将文件放在内容仓库的 `images/favicon.svg`，填写公开路径 `/content/images/favicon.svg`；也支持 PNG、ICO 和完整 HTTP(S) 图片地址。省略时使用不带 AK 字样的默认文档图标。中英文页面和 404 使用同一配置。更换图标时建议同时更换文件名，避免浏览器或 CDN 沿用旧缓存。
 
 也可显式指定配置文件：
 
@@ -200,7 +204,7 @@ npm run smoke:package
 尚未发布到 npm 时，可在仓库根目录用本地产物构建：
 
 ```sh
-npm exec --package=./swufefox-ak-blog-1.0.2.tgz -- ak-blog build --content ../my-content --out ../my-content/out
+npm exec --package=./swufefox-ak-blog-1.0.3.tgz -- ak-blog build --content ../my-content --out ../my-content/out
 ```
 
 ## 首次发布与自动发布
@@ -210,7 +214,7 @@ GitHub 仓库和 npm 包是两个独立资源。首次成功的 `npm publish` �
 ```sh
 npm login --registry=https://registry.npmjs.org
 npm pack
-npm publish ./swufefox-ak-blog-1.0.2.tgz --access public
+npm publish ./swufefox-ak-blog-1.0.3.tgz --access public
 ```
 
 发布目标由 `publishConfig.registry` 固定为 npm 官方 registry。发布账号需要 `@swufefox` scope 权限；登录与 2FA 在本机完成。

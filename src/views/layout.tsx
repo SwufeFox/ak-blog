@@ -58,7 +58,7 @@ export function getLayoutMetadata(locale: Locale): Metadata {
       images: [SOCIAL_IMAGE],
     },
     robots: { index: true, follow: true },
-    icons: { icon: '/favicon.svg' },
+    icons: { icon: siteConfig.favicon },
   }
 }
 

@@ -11,6 +11,7 @@ export const IMAGE_TYPES: Record<string, string> = {
   '.gif': 'image/gif',
   '.avif': 'image/avif',
   '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
 }
 
 /** Enumerate regular image files only; never follow links outside the content tree. */

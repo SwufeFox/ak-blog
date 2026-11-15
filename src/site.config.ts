@@ -75,6 +75,8 @@ export interface SiteConfig {
   description: Record<Locale, string>
   /** Absolute origin of the deployed site, no trailing slash. */
   url: string
+  /** Browser tab icon: a root-relative path or an absolute HTTP(S) URL. */
+  favicon: string
   author: string
   email?: string
   /** External "about me" page. */
@@ -107,6 +109,7 @@ const siteDefaults: SiteConfig = {
     en: 'Notes on code, tools, and the practice of making things simpler.',
   },
   url: 'https://example.com',
+  favicon: '/favicon.svg',
   author: 'your-name',
   email: 'hello@example.com',
   about: 'https://example.com/about',

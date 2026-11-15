@@ -103,6 +103,7 @@ try {
     suffix: '/ journal',
     author: 'Content author',
     url: 'https://content.example.test/',
+    favicon: '/content/images/external.svg',
     description: { zh: '来自独立仓库的站点配置。', en: 'Configuration from the content repository.' },
     sameAs: [],
   }))
@@ -130,6 +131,10 @@ try {
   await page('search')
   const notFoundPage = await readFile(join(output, '404.html'), 'utf8')
   assert.doesNotMatch(notFoundPage, /href="\/(?:en\/)?_not-found(?:\/|")/)
+  for (const document of [home, englishHome, article, englishArticle, notFoundPage, await page('tags/Consumer'), await page('en/search')]) {
+    assert.match(document, /<link\b(?=[^>]*\brel="icon")(?=[^>]*\bhref="\/content\/images\/external\.svg")[^>]*>/)
+    assert.doesNotMatch(document, /<link\b(?=[^>]*\brel="icon")(?=[^>]*\bhref="\/favicon\.svg")[^>]*>/)
+  }
   await access(join(output, 'og.png'))
   for (const slug of ['figures', 'getting-started', 'draft']) {
     assert.equal(await exists(join(output, 'posts', `${slug}.html`)), false, `${slug} leaked into the export`)
@@ -162,7 +167,7 @@ try {
   const failure = await run(buildArgs, { expectFailure: true })
   assert.match(failure, /broken\.md/)
   assert.equal(createHash('sha256').update(await readFile(join(output, 'index.html'))).digest('hex'), previousHash)
-  console.log('Packed CLI and API verified: external bilingual and minimal Chinese content, site identity, images, feeds, static routes, drafts, safe output targets and failed-rebuild preservation.')
+  console.log('Packed CLI and API verified: external bilingual and minimal Chinese content, site identity, custom favicon, images, feeds, static routes, drafts, safe output targets and failed-rebuild preservation.')
 } finally {
   await rm(work, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 })
 }

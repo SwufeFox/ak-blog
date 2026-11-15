@@ -13,6 +13,7 @@
     "en": "Notes on code, tools and everyday life."
   },
   "url": "https://blog.example.com",
+  "favicon": "/content/images/favicon.svg",
   "author": "你的名字",
   "sameAs": [],
   "postsOnHome": 0
@@ -27,6 +28,7 @@
 | `suffix` | string | 首页封面标题和站点后缀 |
 | `description` | `{ zh?: string, en?: string }` | 两种语言的介绍与摘要 |
 | `url` | string | 站点 HTTP(S) origin，不含子路径、查询、fragment 或账号信息 |
+| `favicon` | string | 浏览器标签页图标的站内绝对路径或完整 HTTP(S) URL；默认 `/favicon.svg` |
 | `author` | string | 作者署名 |
 | `email` | string | 页脚邮箱；空字符串可隐藏 |
 | `about` | string | 关于页面链接；空字符串可隐藏 |
@@ -38,6 +40,24 @@
 `description` 和 `license` 按字段合并，其他字段整体覆盖。未知字段、错误类型和负数/小数形式的 `postsOnHome` 会在构建前报错，错误中包含配置文件路径。
 
 默认读取 `<contentDir>/site.json`；也可使用 `--config /path/to/site.json`。文件是 JSON，不执行任意 JavaScript。内容仓库里的 `.env`、应用源码和其他文件不会被复制进临时模板。
+
+## 网站图标
+
+`favicon` 从 `@swufefox/ak-blog` 1.0.3 起提供；使用旧版包时需先升级。
+
+将自己的图标放入内容仓库的 `images/`，例如 `images/favicon.svg`，再在 `site.json` 设置：
+
+```json
+{
+  "favicon": "/content/images/favicon.svg"
+}
+```
+
+SVG、PNG 和 ICO 可随站点导出；也可以填写 `https://example.com/favicon.png` 这样的外链地址。路径以站点根目录的 `/` 开头，不要填写本机路径或 `../images/…`。配置会用于中英文首页、文章、搜索、归档及 404。
+
+没有配置时使用模板的文档图标，不再固定显示 AK。源码项目可在 `src/site.override.json` 使用相同字段，或直接替换 `public/favicon.svg`。页头方块仍取站点名称前两个字，与浏览器图标独立。
+
+浏览器和静态图片 CDN 会缓存图标。更新时可换一个文件名，例如 `favicon-v2.svg`，同步修改配置并重新构建部署。
 
 ## 域名优先级
 

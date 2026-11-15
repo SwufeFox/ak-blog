@@ -9,7 +9,7 @@ import NotFound from '@/views/not-found'
 export const metadata: Metadata = {
   title: `${ui(siteConfig.defaultLocale).notFoundTitle} · ${siteConfig.title}`,
   robots: { index: false, follow: false },
-  icons: { icon: '/favicon.svg' },
+  icons: { icon: siteConfig.favicon },
 }
 
 export default function GlobalNotFound() {

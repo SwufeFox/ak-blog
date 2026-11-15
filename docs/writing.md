@@ -99,7 +99,7 @@ $$
 ```
 
 构建时会把相对路径改写成 `/content/images/…`，并将图片导出为静态文件。本地图片还会读取尺寸，写成 `width` / `height` 属性，并带上 `loading="lazy"` 和 `decoding="async"`，避免图片加载完成后把正文顶下去。
-只导出图片目录中的 PNG、JPEG、WebP、GIF、AVIF 和 SVG，不公开文章源文件。Cloudflare 的 `_headers` 为图片配置一年缓存；其他静态主机按平台设置缓存。也可以直接写 `/content/images/…` 或外链 `https://…`。英文翻译位于 `posts/en/` 时，相对图片路径使用 `../../images/…`。
+只导出图片目录中的 PNG、JPEG、WebP、GIF、AVIF、SVG 和 ICO，不公开文章源文件。ICO 可用于[网站图标](configuration.md#网站图标)。Cloudflare 的 `_headers` 为图片配置一年缓存；其他静态主机按平台设置缓存。也可以直接写 `/content/images/…` 或外链 `https://…`。英文翻译位于 `posts/en/` 时，相对图片路径使用 `../../images/…`。
 
 图片宽度自适应正文栏，带一圈细边线；手机上不会溢出。
 
