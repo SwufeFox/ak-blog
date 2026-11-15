@@ -1,11 +1,11 @@
-'use client'
+ 'use client'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSyncExternalStore } from 'react'
 import { AkMobileMenu } from '@swufefox/ak-ui-react'
 
-import { homePath, searchPath, tagsPath } from '@/lib/urls'
+import { homePath, searchPath, tagPath, tagsPath } from '@/lib/urls'
 import { siteConfig, type Locale } from '@/site.config'
 
 export interface NavLabels {
@@ -24,6 +24,7 @@ interface Props {
   aboutUrl?: string
   otherLocale: Locale
   otherLocaleName: string
+  otherTerms: string[]
   languageHref?: string
 }
 
@@ -31,20 +32,30 @@ function noopSubscribe(): () => void {
   return () => {}
 }
 
-function switchTarget(pathname: string, from: Locale, to: Locale): string {
+function switchTarget(pathname: string, from: Locale, to: Locale, otherTerms: string[]): string {
   const segments = pathname.split('/').filter(Boolean)
   if (segments[0] === from) segments.shift()
+  if (segments[0] === 'tags' && segments.length === 2) {
+    let term: string
+    try {
+      term = decodeURIComponent(segments[1])
+    } catch {
+      return tagsPath(to)
+    }
+    return otherTerms.includes(term) ? tagPath(to, term) : tagsPath(to)
+  }
   const rest = segments.length > 0 ? `/${segments.join('/')}` : '/'
   if (to === siteConfig.defaultLocale) return rest
   return `/${to}${rest === '/' ? '' : rest}`
 }
 
-export function SiteNav({ locale, labels, aboutUrl, otherLocale, otherLocaleName, languageHref }: Props) {
-  const pathname = usePathname()
+export function SiteNav({ locale, labels, aboutUrl, otherLocale, otherLocaleName, otherTerms, languageHref }: Props) {
   // ak-ui numbers its menu instances with a module level counter, so the ids it
   // renders on the server never match the ones the browser produces. The menu
   // is therefore mounted after hydration, where the counter is the only one.
+  const pathname = usePathname()
   const mounted = useSyncExternalStore(noopSubscribe, () => true, () => false)
+  const computedLanguageHref = languageHref ?? switchTarget(pathname, locale, otherLocale, otherTerms)
 
   const isTags = pathname.includes('/tags')
   const isSearch = pathname.includes('/search')
@@ -73,7 +84,7 @@ export function SiteNav({ locale, labels, aboutUrl, otherLocale, otherLocaleName
         {links}
         {!isPost ? (
           <Link
-            href={languageHref ?? switchTarget(pathname, locale, otherLocale)}
+            href={computedLanguageHref}
             hrefLang={otherLocale}
             lang={otherLocale}
             aria-label={labels.language}
@@ -90,7 +101,7 @@ export function SiteNav({ locale, labels, aboutUrl, otherLocale, otherLocaleName
           {links}
           {!isPost ? (
             <Link
-              href={languageHref ?? switchTarget(pathname, locale, otherLocale)}
+              href={computedLanguageHref}
               hrefLang={otherLocale}
               lang={otherLocale}
             >

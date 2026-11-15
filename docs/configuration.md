@@ -29,6 +29,7 @@
 | `description` | `{ zh?: string, en?: string }` | 两种语言的介绍与摘要 |
 | `url` | string | 站点 HTTP(S) origin，不含子路径、查询、fragment 或账号信息 |
 | `favicon` | string | 浏览器标签页图标的站内绝对路径或完整 HTTP(S) URL；默认 `/favicon.svg` |
+| `socialImage` | string | 自定义分享图片的站内绝对路径或完整 HTTP(S) URL；省略时自动生成 `/og.png` |
 | `author` | string | 作者署名 |
 | `email` | string | 页脚邮箱；空字符串可隐藏 |
 | `about` | string | 关于页面链接；空字符串可隐藏 |
@@ -59,6 +60,20 @@ SVG、PNG 和 ICO 可随站点导出；也可以填写 `https://example.com/favi
 
 浏览器和静态图片 CDN 会缓存图标。更新时可换一个文件名，例如 `favicon-v2.svg`，同步修改配置并重新构建部署。
 
+## 分享卡片
+
+`socialImage` 从 1.0.4 起提供。不设置时，模板使用站点名称、后缀、默认语言简介和域名生成 1200×630 的 `/og.png`。构建使用包内的 Noto Sans CJK 字体，支持中文，不依赖在线字体请求；字体只用于构建，不会由网页下载。
+
+使用自己的图片时，把 PNG/JPEG 放入内容仓库的 `images/`，例如 `images/social.png`，再设置：
+
+```json
+{
+  "socialImage": "/content/images/social.png"
+}
+```
+
+也支持完整 HTTP(S) 图片地址。建议图片使用 1200×630；模板不会猜测自定义图片的尺寸。中英文首页和文章的 Open Graph / Twitter metadata 共用这张图片，替代文字使用当前语言的站点简介。替换图片时建议更换文件名并重新构建。
+
 ## 域名优先级
 
 从高到低：
@@ -83,6 +98,7 @@ SVG、PNG 和 ICO 可随站点导出；也可以填写 `https://example.com/favi
 - `posts/en/example.md` → `/en/posts/example`
 - 同名文件互为翻译，缺少翻译时不生成对应文章入口。
 - 只有中文文章时，英文首页、搜索、归档和空 RSS 仍可生成。
+- 标签和分类页切换语言时，存在同名词条就保留词条路径；目标语言没有该词条时，返回对应语言的归档页。
 
 添加其他语言是源码定制，不是随意在 JSON 中增加一个键：需要更新语言类型、完整 UI 文案、URL 约定、对应的静态路由入口，以及 `next.config.ts` 的可选路由扩展。页面实现可复用 `src/views/`，无需复制整套页面布局。
 

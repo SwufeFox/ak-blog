@@ -19,6 +19,7 @@ import type { ElementContent, Root as HastRoot } from 'hast'
 
 import { ui } from '@/lib/i18n'
 import type { Locale } from '@/site.config'
+import { sanitizeSketchSvg } from '@/lib/sketch'
 
 export interface TocEntry {
   id: string
@@ -245,30 +246,6 @@ function renderStatsBlock(source: string): string {
     .join('')
 }
 
-/** Hand written SVG in a post: strip everything that could execute. */
-function sanitizeSvg(svg: string): string {
-  const cleaned = svg
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<style[\s\S]*?<\/style>/gi, '')
-    .replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi, '')
-    .replace(/\son[a-z]+\s*=\s*"[^"]*"/gi, '')
-    .replace(/\son[a-z]+\s*=\s*'[^']*'/gi, '')
-    .replace(/\sstyle\s*=\s*"[^"]*"/gi, '')
-    .replace(/\sstyle\s*=\s*'[^']*'/gi, '')
-    .replace(/(href|xlink:href)\s*=\s*"(?!#)[^"]*"/gi, '$1="#')
-
-  // Sketches reference `url(#arrow)` for the house arrowhead; define it once
-  // per drawing when the author did not bring their own marker.
-  if (/marker-end\s*=\s*"url\(#arrow\)"/.test(cleaned) && !/id\s*=\s*"arrow"/.test(cleaned)) {
-    return cleaned.replace(
-      /<svg\b[^>]*>/,
-      (tag) =>
-        `${tag}<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ak-arrowhead" d="M0 0 L10 5 L0 10"/></marker></defs>`,
-    )
-  }
-
-  return cleaned
-}
 
 function figureCaption(index: number, attributes: BlockAttributes): string {
   const title = attributes.title ? escapeHtml(attributes.title) : ''
@@ -358,7 +335,7 @@ const remarkBlogBlocks: Plugin<[], MdastRoot> = () => (tree, file) => {
         break
       }
       case 'sketch':
-        body = `<div class="ak-figure__plot ak-sketch">${sanitizeSvg(source)}</div>`
+        body = `<div class="ak-figure__plot ak-sketch">${sanitizeSketchSvg(source)}</div>`
         break
       default:
         break

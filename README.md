@@ -70,6 +70,8 @@ npx @swufefox/ak-blog build --content . --out ./out
 
 从 `1.0.3` 起，浏览器标签页图标通过 `favicon` 配置：将文件放在内容仓库的 `images/favicon.svg`，填写公开路径 `/content/images/favicon.svg`；也支持 PNG、ICO 和完整 HTTP(S) 图片地址。省略时使用不带 AK 字样的默认文档图标。中英文页面和 404 使用同一配置。更换图标时建议同时更换文件名，避免浏览器或 CDN 沿用旧缓存。
 
+从 `1.0.4` 起，默认分享卡片会根据站点名称、后缀、中文简介和域名生成，内置字体支持中文且构建时无需联网下载。也可以把 PNG/JPEG 放在 `images/social.png`，设置 `"socialImage": "/content/images/social.png"`，或使用完整 HTTP(S) 图片地址。详见[分享卡片配置](docs/configuration.md#分享卡片)。
+
 也可显式指定配置文件：
 
 ```sh
@@ -204,7 +206,7 @@ npm run smoke:package
 尚未发布到 npm 时，可在仓库根目录用本地产物构建：
 
 ```sh
-npm exec --package=./swufefox-ak-blog-1.0.3.tgz -- ak-blog build --content ../my-content --out ../my-content/out
+npm exec --package=./swufefox-ak-blog-1.0.4.tgz -- ak-blog build --content ../my-content --out ../my-content/out
 ```
 
 ## 首次发布与自动发布
@@ -214,7 +216,7 @@ GitHub 仓库和 npm 包是两个独立资源。首次成功的 `npm publish` �
 ```sh
 npm login --registry=https://registry.npmjs.org
 npm pack
-npm publish ./swufefox-ak-blog-1.0.3.tgz --access public
+npm publish ./swufefox-ak-blog-1.0.4.tgz --access public
 ```
 
 发布目标由 `publishConfig.registry` 固定为 npm 官方 registry。发布账号需要 `@swufefox` scope 权限；登录与 2FA 在本机完成。

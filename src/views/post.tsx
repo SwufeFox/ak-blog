@@ -9,7 +9,7 @@ import { ReadingProgress } from '@/components/reading-progress'
 import { otherLocale, ui } from '@/lib/i18n'
 import { kicker } from '@/lib/kickers'
 import { renderMarkdown } from '@/lib/markdown'
-import { SOCIAL_IMAGE } from '@/lib/social'
+import { getSocialImage } from '@/lib/social'
 import {
   formatDate,
   getPost,
@@ -35,6 +35,8 @@ export async function getPostMetadata(resolved: Locale, slug: string): Promise<M
     if (translated) languages[entry] = postPath(entry, post.slug)
   }
 
+  const socialImage = getSocialImage(resolved)
+
   return {
     title: post.title,
     description: post.description,
@@ -52,13 +54,13 @@ export async function getPostMetadata(resolved: Locale, slug: string): Promise<M
       modifiedTime: post.updated ? toISODate(post.updated) : undefined,
       authors: [siteConfig.author],
       tags: post.tags,
-      images: [SOCIAL_IMAGE],
+      images: [socialImage],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.description,
-      images: [SOCIAL_IMAGE],
+      images: [socialImage],
     },
   }
 }

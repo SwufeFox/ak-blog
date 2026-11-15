@@ -56,9 +56,9 @@ Next 16.4.6 静态导出会拒绝空的动态 `generateStaticParams()` 集合。
 
 `src/site-options.ts` 定义内容仓库 JSON 契约；`src/site.config.ts` 合并模板默认值和 JSON 覆盖。`NEXT_PUBLIC_SITE_URL` 最后覆盖 origin。浏览器可导入站点配置，但配置模块不读取文件系统。
 
-`src/views/layout.tsx` 提供共享 shell、主题 head 内容和 metadata 默认值。真正的 `<html>` / `<head>` / `<body>` 位于两套根 layout 和 `global-not-found.tsx`。默认中文文档使用 `zh-CN`，英文使用 `en`。
+`src/views/layout.tsx` 提供共享 shell、主题 head 内容和 metadata 默认值。shell 在构建时把目标语言的标签/分类名称传给导航，客户端据此选择有效词条路径或归档回退，不请求额外索引。真正的 `<html>` / `<head>` / `<body>` 位于两套根 layout 和 `global-not-found.tsx`。默认中文文档使用 `zh-CN`，英文使用 `en`。
 
-各内容页面显式提供 canonical 和语言链接，搜索 `noindex`，404 `noindex/nofollow`。`src/lib/social.ts` 统一引用 `/og.png`。给静态图片使用扩展名，使普通文件托管也能返回正确的 `image/png` 类型。
+各内容页面显式提供 canonical 和语言链接，搜索 `noindex`，404 `noindex/nofollow`。`src/lib/social.ts` 统一生成当前语言的分享图片描述：使用 `socialImage` 配置，或默认的 `/og.png`。默认 PNG 根据站点配置和本地 Noto Sans CJK 字体在构建时生成，线上没有字体读取或图片生成服务。
 
 ## 内容与 Markdown
 
@@ -77,7 +77,7 @@ Next 16.4.6 静态导出会拒绝空的动态 `generateStaticParams()` 集合。
 | Shiki 与代码包装 | 明暗代码主题、文件名、行号、复制按钮 |
 | HTML 序列化 | 静态文章正文 |
 
-`sketch` SVG 会清理，ECharts 只接受 JSON。非法 front matter 和 ECharts JSON 在构建时报出源文件上下文。
+`sketch` 由 `src/lib/sketch.ts` 单独解析和白名单清理 SVG，再交回 Markdown 管线；不对 KaTeX、图表 JSON 或代码高亮的生成结果做全局清理。ECharts 只接受 JSON。非法 front matter 和 ECharts JSON 在构建时报出源文件上下文。
 
 ## 图片与浏览器行为
 

@@ -7,7 +7,7 @@ import { siteConfig, type Locale } from '@/site.config'
 import { SiteNav } from './site-nav'
 import { ThemeToggle } from './theme-toggle'
 
-export function SiteHeader({ locale, otherLocale, languageHref }: { locale: Locale; otherLocale: Locale; languageHref?: string }) {
+export function SiteHeader({ locale, otherLocale, otherTerms, languageHref }: { locale: Locale; otherLocale: Locale; otherTerms: string[]; languageHref?: string }) {
   const copy = ui(locale)
 
   return (
@@ -25,6 +25,7 @@ export function SiteHeader({ locale, otherLocale, languageHref }: { locale: Loca
           aboutUrl={siteConfig.about}
           otherLocale={otherLocale}
           otherLocaleName={siteConfig.localeNames[otherLocale]}
+          otherTerms={otherTerms}
           languageHref={languageHref}
           labels={{
             home: copy.home,

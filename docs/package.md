@@ -53,9 +53,11 @@ await buildBlog({
 
 `buildBlog(options: BuildBlogOptions): Promise<void>` is a Node-only entry point. It is separate from the React entry so browser consumers do not import filesystem or process APIs. The package exports `BuildBlogOptions` and `SiteOptions` types from this subpath.
 
-`SiteOptions` accepts optional `title`, `suffix`, `description` (`zh` / `en`), `url`, `favicon`, `author`, `email`, `about`, `repo`, `sameAs`, `postsOnHome`, and `license` (`name` / `url`). Nested description/license fields merge with defaults. Unknown fields and invalid types fail with the configuration path. `url` must be an absolute HTTP(S) origin; trailing slashes are normalized. `NEXT_PUBLIC_SITE_URL` overrides the JSON URL during the build.
+`SiteOptions` accepts optional `title`, `suffix`, `description` (`zh` / `en`), `url`, `favicon`, `socialImage`, `author`, `email`, `about`, `repo`, `sameAs`, `postsOnHome`, and `license` (`name` / `url`). Nested description/license fields merge with defaults. Unknown fields and invalid types fail with the configuration path. `url` must be an absolute HTTP(S) origin; trailing slashes are normalized. `NEXT_PUBLIC_SITE_URL` overrides the JSON URL during the build.
 
 Since version 1.0.3, set `favicon` to a root-relative public path or an absolute HTTP(S) URL. For a content-owned icon, place `favicon.svg`, `.png` or `.ico` in `images/` and use `/content/images/favicon.svg` (with the matching extension). The same icon appears on both locales and the static 404. The default `/favicon.svg` is a neutral document mark; change the filename when replacing a cached custom icon. See [configuration](configuration.md#网站图标).
+
+Since version 1.0.4, `socialImage` accepts the same public-path or HTTP(S) URL form for a custom sharing image, for example `/content/images/social.png`. Prefer a 1200×630 PNG/JPEG. Custom dimensions are not guessed. When omitted, `/og.png` is generated from the configured site title, suffix, default-locale description and hostname, using the bundled Noto Sans CJK font without a font download during the build. Open Graph and Twitter image alt text follows the page locale. The font and its OFL license are included in the template; the deployed pages do not download it.
 
 The template keeps Chinese at `/` and English at `/en`. Adding other languages is a source-level customization because UI strings and route definitions must remain exhaustive.
 
@@ -102,7 +104,7 @@ npm run smoke:package
 Before npm publication, use the local tarball:
 
 ```sh
-npm exec --package=./swufefox-ak-blog-1.0.3.tgz -- ak-blog build --content ../my-content --out ../my-content/out
+npm exec --package=./swufefox-ak-blog-1.0.4.tgz -- ak-blog build --content ../my-content --out ../my-content/out
 ```
 
 See [deployment](deploy.md) for Cloudflare Pages and other static hosts, and [writing](writing.md) for content syntax.
@@ -118,7 +120,7 @@ A GitHub repository and an npm package are separate resources. The first success
 ```sh
 npm login --registry=https://registry.npmjs.org
 npm pack
-npm publish ./swufefox-ak-blog-1.0.3.tgz --access public
+npm publish ./swufefox-ak-blog-1.0.4.tgz --access public
 ```
 
 Complete login and 2FA locally. `publishConfig.registry` fixes publication to the official npm registry even when installations use a mirror. The scoped package is public.

@@ -4,6 +4,7 @@ export interface SiteOptions {
   description?: Partial<Record<'zh' | 'en', string>>
   url?: string
   favicon?: string
+  socialImage?: string
   author?: string
   email?: string
   about?: string
@@ -18,6 +19,7 @@ const textFields: Record<string, true> = {
   suffix: true,
   url: true,
   favicon: true,
+  socialImage: true,
   author: true,
   email: true,
   about: true,
@@ -85,16 +87,18 @@ export function validateSiteOptions(value: unknown, source: string): SiteOptions
     }
     result.url = url.origin
   }
-  if (result.favicon !== undefined) {
+  for (const field of ['favicon', 'socialImage'] as const) {
+    const value = result[field]
+    if (value === undefined) continue
     try {
-      const icon = new URL(result.favicon, 'https://example.com')
-      if (!/^(?:\/(?![\\/])|https?:\/\/)/i.test(result.favicon)
-        || !['http:', 'https:'].includes(icon.protocol) || icon.username || icon.password
-        || result.favicon.includes('\\')) {
-        throw new Error('Invalid favicon URL')
+      const image = new URL(value, 'https://example.com')
+      if (!/^(?:\/(?![\\/])|https?:\/\/)/i.test(value)
+        || !['http:', 'https:'].includes(image.protocol) || image.username || image.password
+        || value.includes('\\')) {
+        throw new Error('Invalid image URL')
       }
     } catch {
-      throw new Error(`${source}.favicon: expected a root-relative path or absolute HTTP(S) URL`)
+      throw new Error(`${source}.${field}: expected a root-relative path or absolute HTTP(S) URL`)
     }
   }
   return result

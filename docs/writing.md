@@ -195,9 +195,9 @@ flowchart TD
 | `b` / `mono` | `text` | 加粗 / 等宽 |
 | `mid` / `end` | `text` | 居中 / 右对齐 |
 
-颜色只能写 class 或 `var(--…)`；写死的颜色、`<script>`、`<style>`、`<foreignObject>`、
-`style` 属性和事件属性都会在构建时被清掉。连线写 `marker-end="url(#arrow)"` 会自动补上开口箭头；
-需要精确坐标时先在纸上算好网格（行高 34、节点间距 4–24），再照着写。
+只保留 `<svg>`、`g`、`path`、`rect`、`circle`、`ellipse`、`line`、`polyline`、`polygon`、`text`、`tspan`、`defs`、`marker`、`linearGradient`、`radialGradient`、`stop` 和 `clipPath`。可用属性包括几何坐标与路径、`viewBox`、`transform`、描边与填充、渐变 / 裁剪 / 箭头标记、`id`、`class`、`role`、`aria-label`、`aria-labelledby` 和 `aria-hidden`。坐标须为数字；颜色可用 CSS 颜色、`currentColor`、`none`、`var(--…)`，也可用 `url(#id)` 引用本图定义的渐变、裁剪或标记。`href` / `xlink:href` 只接受 `#id`。
+
+脚本、样式、动画、`foreignObject`、嵌入内容、事件属性、内联 `style`、外链及 `data:` / 脚本引用都会被移除；不支持的元素及其内容也会丢弃。连线写 `marker-end="url(#arrow)"` 且未自行定义 `arrow` 时，会自动补上开口箭头；需要精确坐标时先在纸上算好网格（行高 34、节点间距 4–24），再照着写。
 
 ## 交互图表 `echarts`
 

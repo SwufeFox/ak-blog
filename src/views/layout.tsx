@@ -8,7 +8,8 @@ import { AkGridBackdrop } from '@swufefox/ak-ui-react'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { otherLocale, ui } from '@/lib/i18n'
-import { SOCIAL_IMAGE } from '@/lib/social'
+import { getCategoryCounts, getTags } from '@/lib/posts'
+import { getSocialImage } from '@/lib/social'
 import { THEME_COLORS, THEME_STORAGE_KEY } from '@/lib/theme'
 import { homePath } from '@/lib/urls'
 import { siteConfig, type Locale } from '@/site.config'
@@ -26,6 +27,7 @@ export function SiteHead() {
 }
 
 export function getLayoutMetadata(locale: Locale): Metadata {
+  const socialImage = getSocialImage(locale)
 
   return {
     metadataBase: new URL(siteConfig.url),
@@ -49,20 +51,20 @@ export function getLayoutMetadata(locale: Locale): Metadata {
       title: `${siteConfig.title} ${siteConfig.suffix}`,
       description: siteConfig.description[locale],
       locale,
-      images: [SOCIAL_IMAGE],
+      images: [socialImage],
     },
     twitter: {
       card: 'summary_large_image',
       title: `${siteConfig.title} ${siteConfig.suffix}`,
       description: siteConfig.description[locale],
-      images: [SOCIAL_IMAGE],
+      images: [socialImage],
     },
     robots: { index: true, follow: true },
     icons: { icon: siteConfig.favicon },
   }
 }
 
-export default function SiteShell({
+export default async function SiteShell({
   children,
   locale: resolved,
   languageHref,
@@ -72,6 +74,9 @@ export default function SiteShell({
   languageHref?: string
 }) {
   const copy = ui(resolved)
+  const target = otherLocale(resolved)
+  const [tags, categories] = await Promise.all([getTags(target), getCategoryCounts(target)])
+  const otherTerms = [...new Set([...tags.map((tag) => tag.name), ...categories.map((category) => category.name)])]
 
   return (
     <div className="site-canvas">
@@ -80,7 +85,7 @@ export default function SiteShell({
         <a className="skip" href="#main">
           {copy.skip}
         </a>
-        <SiteHeader locale={resolved} otherLocale={otherLocale(resolved)} languageHref={languageHref} />
+        <SiteHeader locale={resolved} otherLocale={target} otherTerms={otherTerms} languageHref={languageHref} />
         <main id="main">{children}</main>
         <SiteFooter locale={resolved} />
       </div>

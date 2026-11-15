@@ -77,6 +77,8 @@ export interface SiteConfig {
   url: string
   /** Browser tab icon: a root-relative path or an absolute HTTP(S) URL. */
   favicon: string
+  /** Custom sharing image; omitted to generate /og.png from the site identity. */
+  socialImage?: string
   author: string
   email?: string
   /** External "about me" page. */
